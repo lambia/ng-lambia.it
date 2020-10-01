@@ -1,3 +1,9 @@
-<p>Matrix works
-    <span>{{matrix.name}}</span>
-</p>
+<h3>Stamp Matrix Works</h3>
+
+<div id="wrapper">
+    <ng-container *ngFor="let stamp of stamps">
+        <div class="stamp" *ngIf="stamp.visible">
+            <span (click)="onSelect(stamp)">{{stamp.title}}</span>
+        </div>
+    </ng-container>
+</div>
