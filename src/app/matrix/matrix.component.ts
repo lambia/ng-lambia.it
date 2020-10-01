@@ -18,37 +18,40 @@ export class MatrixComponent implements OnInit {
 
   countries = [];
   categories = [];
+  selected = {};
 
-  selectedCategory: string;
-  selectedCountry: string;
-  //ToDo: rimuovere e chiamare direttamente filterMatrix
-  onCategorySelect(category: string): void {
-    this.selectedCategory = category;
-    console.log("Selected stamp: ", category);
-    this.filterMatrix("category", category);
-  }
-  onCountrySelect(country: string): void {
-    this.selectedCountry = country;
-    console.log("Selected stamp: ", country);
-    this.filterMatrix("country", country);
-  }
+  //ToDo: refactoring
+  filterMatrix(property: string, value?: string): void {
+    console.log(`Selected ${property}: ${value}`);
 
-  filterMatrix(property: string, value: string): void {
-    this.filteredStamps = this.stamps.filter(stamp => {
-      if(stamp[property]) {
-        return stamp[property].indexOf(value)>=0;
-      } else { //ToDo: sistemare
-        return [];
+    
+    if(this.selected[property] === value) {
+      //Se il valore è già selezionato, resetta
+      this.selected[property] = null;
+      this.filteredStamps = this.stamps;
+    } else {
+      //Altrimenti
+      if(value) {
+        //Se c'è un filtro, restituisci il risultato
+        this.selected[property] = value;
+        this.filteredStamps = this.stamps.filter(stamp => {
+          if(stamp[property]) {
+            return stamp[property].indexOf(value)>=0;
+          } else {
+            return [];
+          }
+        });
+      } else {
+        //Altrimenti, resetta
+        this.selected[property] = null;
+        this.filteredStamps = this.stamps;
       }
-    });
+    }
+
   }
 
-  constructor() { }
-
-  ngOnInit(): void {
-    console.log("Matrix init ok");
-
-    //ToDo: usare qualcosa di più efficiente
+  //ToDo: refactoring
+  distinctFromObjectsArray() {
     this.stamps.map(stamp => {
       stamp.country.map(country => {
         this.countries.push(country);
@@ -59,7 +62,12 @@ export class MatrixComponent implements OnInit {
     });
     this.countries = [...new Set(this.countries)];
     this.categories = [...new Set(this.categories)];
+  }
 
+  constructor() { }
+
+  ngOnInit(): void {
+    this.distinctFromObjectsArray();
   }
 
 }
