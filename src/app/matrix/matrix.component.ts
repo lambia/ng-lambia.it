@@ -21,6 +21,8 @@ export class MatrixComponent implements OnInit {
   selected = {};
 
   //ToDo: refactoring
+  //ToDo: filtri multipli
+  //ToDo: selected deve essere un oggetto con tutti i possibili valori, da settare true o false
   filterMatrix(property: string, value?: string): void {
     console.log(`Selected ${property}: ${value}`);
 
