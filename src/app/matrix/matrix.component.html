@@ -1,9 +1,24 @@
-<h3>Stamp Matrix Works</h3>
-
 <div id="wrapper">
-    <ng-container *ngFor="let stamp of stamps">
+
+<!-- ToDo: aggiungere filtri ALL e relativa logica -->
+
+    <h4>Categories</h4>
+    <span *ngFor="let category of categories" (click)="onCategorySelect(category)">
+        {{category}}&nbsp;
+    </span>
+
+    <h4>Countries</h4>
+    <span *ngFor="let country of countries" (click)="onCountrySelect(country)">
+        {{country}}&nbsp;
+    </span>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <ng-container *ngFor="let stamp of filteredStamps">
         <div class="stamp" *ngIf="stamp.visible">
-            <span (click)="onSelect(stamp)">{{stamp.title}}</span>
+            <span>{{stamp.title}}</span>
         </div>
     </ng-container>
 </div>

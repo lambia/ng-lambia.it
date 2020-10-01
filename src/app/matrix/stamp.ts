@@ -5,4 +5,6 @@ export interface Stamp {
     readonly href?: string;
     readonly src?: string;
     readonly description?: string;
+    readonly country: string[];
+    readonly category: string[];
 }
