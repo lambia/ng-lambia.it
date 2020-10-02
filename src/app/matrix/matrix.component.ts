@@ -57,7 +57,6 @@ export class MatrixComponent implements OnInit {
   distinctFromObjectsArray(array: object[], properties: string[]) {
     let tmp = { };
 
-    //ToDo: spostare nel for del map, sotto
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
       tmp[property] = [];
@@ -69,14 +68,17 @@ export class MatrixComponent implements OnInit {
       for (let i = 0; i < properties.length; i++) {
         const property = properties[i];
         
-        //Per ogni valore della proprietà dell'oggetto dell'array
+        //Per ogni valore della proprietà dell'oggetto dell'array, pusha
         stamp[property].map(p => {
+          // Con questo ternario si può eliminare il for precedente, ma è meno efficiente
+          // tmp[property] ? tmp[property].push(p) : tmp[property] = [p];
           tmp[property].push(p);
+          // Con questo ternario si può eliminare il for successivo, ma è meno efficiente
+          // tmp[property] = [...new Set(tmp[property])];
         });
       }
     });
 
-    //ToDo: spostare nel for del map, sopra
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
       tmp[property] = [...new Set(tmp[property])];
