@@ -4,13 +4,13 @@
 
     <h4>Categories</h4>
     <span (click)="filterMatrix('category')">ALL</span>
-    <span *ngFor="let category of categories" (click)="filterMatrix('category', category)">
+    <span *ngFor="let category of datasources.category" (click)="filterMatrix('category', category)">
         {{category}}&nbsp;
     </span>
 
     <h4>Countries</h4>
     <span (click)="filterMatrix('country')">ALL</span>
-    <span *ngFor="let country of countries" (click)="filterMatrix('country', country)">
+    <span *ngFor="let country of datasources.country" (click)="filterMatrix('country', country)">
         {{country}}&nbsp;
     </span>
 

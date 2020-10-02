@@ -16,16 +16,17 @@ export class MatrixComponent implements OnInit {
   stamps = STAMPS; //M3
   filteredStamps = STAMPS; //M3
 
-  countries = [];
-  categories = [];
   selected = {};
+  //ToDo: cambiare nome
+  //ToDo: check init null o {any}
+  datasources = null;
+  filters = null;
 
   //ToDo: refactoring
   //ToDo: filtri multipli
   //ToDo: selected deve essere un oggetto con tutti i possibili valori, da settare true o false
   filterMatrix(property: string, value?: string): void {
     console.log(`Selected ${property}: ${value}`);
-
     
     if(this.selected[property] === value) {
       //Se il valore è già selezionato, resetta
@@ -53,23 +54,47 @@ export class MatrixComponent implements OnInit {
   }
 
   //ToDo: refactoring
-  distinctFromObjectsArray() {
+  distinctFromObjectsArray(array: object[], properties: string[]) {
+    let tmp = { };
+
+    //ToDo: spostare nel for del map, sotto
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      tmp[property] = [];
+    }
+
+    //Per ogni oggetto dell'array
     this.stamps.map(stamp => {
-      stamp.country.map(country => {
-        this.countries.push(country);
-      });
-      stamp.category.map(category => {
-        this.categories.push(category);
-      });
+      //Per ogni proprietà dell'oggetto dell'array
+      for (let i = 0; i < properties.length; i++) {
+        const property = properties[i];
+        
+        //Per ogni valore della proprietà dell'oggetto dell'array
+        stamp[property].map(p => {
+          tmp[property].push(p);
+        });
+      }
     });
-    this.countries = [...new Set(this.countries)];
-    this.categories = [...new Set(this.categories)];
+
+    //ToDo: spostare nel for del map, sopra
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      tmp[property] = [...new Set(tmp[property])];
+    }
+
+    return tmp;
+  }
+
+  //ToDo: fare
+  booleansObjectFromArray(obj: object) {
+    return {};
   }
 
   constructor() { }
 
   ngOnInit(): void {
-    this.distinctFromObjectsArray();
+    this.datasources = this.distinctFromObjectsArray(this.stamps, ["country","category"]);
+    // this.filters = this.booleansObjectFromArray(this.datasources);
   }
 
 }
