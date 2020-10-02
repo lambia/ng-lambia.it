@@ -1,6 +1,22 @@
+<style>
+    .selected {
+        color: red;
+        font-weight: 800;
+    }
+</style>
+
 <div id="wrapper">
 
 <!-- ToDo: aggiungere classe selected -->
+
+    <div *ngFor="let index of storeIndex">
+        <h4>{{index}}</h4>
+        <span [className]="category.selected?'selected':''" *ngFor="let category of filteredStore[index]" (click)="onNewFilter(index, category.id)">
+            {{category.id}}.{{category.name}}&nbsp;
+        </span>
+    </div>
+
+    <br/><hr><br/>
 
     <h4>Categories</h4>
     <span (click)="onFilter('category')">ALL</span>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // import { StampMatrix } from './stamp.matrix'; //M1
-import { Stamp } from './stamp'; //M2
+// import { Stamp } from './stamp'; //M2
 import { STAMPS } from './stamp.mock'; //M3
 
 @Component({
@@ -21,6 +21,78 @@ export class MatrixComponent implements OnInit {
   //ToDo: check init null o {any}
   datasources = null;
   filters = null;
+
+  storeIndex = ["colors", "things", "categories"];
+  store = {
+    colors: [
+      { id: 1, name: "Red", links: { things: [1,2,3], categories: [1,2,3] } },
+      { id: 2, name: "White", links: { things: [4,5], categories: [3] } },
+      { id: 3, name: "Green", links: { things: [6,7], categories: [1,2] } },
+    ],
+    things: [
+      { id: 1, name: "Blood", links: { colors: [1], categories: [2] } },
+      { id: 2, name: "Fire", links: { colors: [1], categories: [3] } },
+      { id: 3, name: "Cherries", links: { colors: [1], categories: [1] } },
+      { id: 4, name: "Sun", links: { colors: [2], categories: [3] } },
+      { id: 5, name: "Snow", links: { colors: [2], categories: [3] } },
+      { id: 6, name: "Grass", links: { colors: [3], categories: [2] } },
+      { id: 7, name: "Avocado", links: { colors: [3], categories: [1,2] } },
+    ],
+    categories: [
+      { id: 1, name: "Fruits", links: { colors: [1,3], things: [3,7] } },
+      { id: 2, name: "Organic", links: { colors: [1,3], things: [1,3,6,7] } },
+      { id: 3, name: "Physics", links: { colors: [1,2], things: [1,4,5] } },
+    ]
+  };
+  filteredStore = {}; // = this.store
+  
+  initData() {
+    this.storeIndex.map(group => {
+      this.store[group].map(item=>{
+        item.selected = false;
+      });
+    });
+
+    this.filteredStore = this.store;
+  }
+
+  //prendi this.store[property] con id = value
+  onNewFilter(property?: string, value?: string): void {
+    console.log(`Selected ${property}: ${value}`);
+    
+    //Per ogni grouppo
+    this.storeIndex.map(group=>{
+      this.filteredStore[group].map(item=>{
+        //Se si tratta del gruppo del filtro
+        if(group==property) {
+          //Evidenzia solo il selezionato
+          item.selected = (item.id==value);
+        } else {
+          //Altrimenti, evidenzia quelle che corrispondono al filtro
+          if(item.links[property].indexOf(value)>=0) {
+            item.selected = true;
+          } else {
+            item.selected = false;
+          }
+        }
+      });
+    });
+
+    // let tmp = {};
+
+    // this.storeIndex.filter(group=>group!=property).map(group=> {
+    //   tmp[group] = this.store[group].filter(item=> {
+        
+    //     console.log(`Search for ${property}:${value} in ${group}`, item.links[property]);
+    //     return item.links[property].indexOf(value)>=0;
+    //   });
+    // });
+
+    // tmp[property] = this.store[property];
+
+    // this.filteredStore = tmp;
+    // console.log("filtrati", this.filteredStore);
+  }
 
   onFilter(property?: string, value?: string): void {
     //Se il valore era già selezionato
@@ -108,6 +180,8 @@ export class MatrixComponent implements OnInit {
     this.filters = this.booleansObjectFromArray(this.datasources, ["country","category"]);
     console.log(this.filters);
     this.filteredStamps = this.stamps; //ToDo: usare funzione
+
+    this.initData();
   }
 
 }
