@@ -22,32 +22,32 @@ export class MatrixComponent implements OnInit {
   datasources = null;
   filters = null;
 
+  onFilter(property?: string, value?: string): void {
+    //Se il valore era già selezionato
+    if(this.selected[property] === value || !property || !value) {
+      //ToDo: settare in this.filters invece che in selected
+      this.selected[property] = null;
+      this.filteredStamps = this.stamps;
+    } else {
+      //ToDo: settare in this.filters invece che in selected
+      this.selected[property] = value;
+      this.filteredStamps = this.filterData(this.stamps, property, value);
+    }
+  }
+  
   //ToDo: filtri multipli
   //ToDo: selected deve essere un oggetto con tutti i possibili valori, da settare true o false
-  filterData(data: object[], property?: string, value?: string): {} {
+  filterData(data: object[], property: string, value: string): {} {
     console.log(`Selected ${property}: ${value}`);
-    let r = {};
 
-    if(!property || !value || this.selected[property] === value){
-      //Se non ci proprietà o valori per cui filtrare, o se il filtro è già applicato 
-      this.selected[property] = null;
-      r = data;
-    } else {
-      //Restituisci i risultati per quel valore in quella proprietà (where property = value)
-      this.selected[property] = value;
-      r = data.filter(stamp => stamp[property].indexOf(value)>=0);
-    }
-
-    return r;
-  }
-
-  onFilter(property: string, value?: string): void {
-    this.filteredStamps = this.filterData(this.stamps, property, value);
+    //Restituisci i risultati per quel valore in quella proprietà (where property = value)
+    //Il ternario serve a non farlo spaccare in caso di proprietà non esistenti
+    return data.filter(stamp => stamp[property] ? stamp[property].indexOf(value)>=0 : false);
   }
 
   //ToDo: naming
   distinctFromObjectsArray(array: object[], properties: string[]): object {
-    let tmp = { };
+    let tmp = [];
 
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
@@ -55,7 +55,7 @@ export class MatrixComponent implements OnInit {
     }
 
     //Per ogni oggetto dell'array
-    this.stamps.map(stamp => {
+    array.map(stamp => {
       //Per ogni proprietà dell'oggetto dell'array
       for (let i = 0; i < properties.length; i++) {
         const property = properties[i];
@@ -75,18 +75,39 @@ export class MatrixComponent implements OnInit {
     return tmp;
   }
 
-  //ToDo: fare
   //ToDo: naming
-  booleansObjectFromArray(obj: object) {
-    return {};
+  //ToDo: typing
+  //ToDo doppio for sostituibile
+  booleansObjectFromArray(obj, properties) {
+    let tmp = [];
+
+    //Per ognuna delle proprietà
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      //Per ognuno dei valori della proprietà
+      for (let j = 0; j < obj[property].length; j++) {
+        const element = obj[property][j];
+        //Crea un array
+        if(!tmp[property]){
+          tmp[property] = {};
+        }
+        //E inizializza a false
+        tmp[property][element] = false;
+      }
+    }
+
+    return tmp;
   }
 
   constructor() { }
 
   ngOnInit(): void {
     this.datasources = this.distinctFromObjectsArray(this.stamps, ["country","category"]);
-    // this.filters = this.booleansObjectFromArray(this.datasources);
-    this.filteredStamps = this.filterData(this.stamps);
+    console.log(this.datasources);
+    // this.filters = 
+    this.filters = this.booleansObjectFromArray(this.datasources, ["country","category"]);
+    console.log(this.filters);
+    this.filteredStamps = this.stamps; //ToDo: usare funzione
   }
 
 }
