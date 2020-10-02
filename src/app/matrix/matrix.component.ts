@@ -22,44 +22,22 @@ export class MatrixComponent implements OnInit {
   datasources = null;
   filters = null;
 
-  //ToDo: refactoring
   //ToDo: filtri multipli
   //ToDo: selected deve essere un oggetto con tutti i possibili valori, da settare true o false
   filterData(data: object[], property?: string, value?: string): {} {
     console.log(`Selected ${property}: ${value}`);
     let r = {};
-    
-    if(property) {
-      //Se è stata passata una proprietà per cui filtrare
 
-      if(this.selected[property] === value) {
-        //Se il valore è già selezionato, resetta
-        this.selected[property] = null;
-        r = data;
-      } else {
-        //Altrimenti
-        if(value) {
-          //Se c'è un filtro, restituisci il risultato
-          this.selected[property] = value;
-          r = data.filter(stamp => {
-            if(stamp[property]) {
-              return stamp[property].indexOf(value)>=0;
-            } else {
-              return [];
-            }
-          });
-        } else {
-          //Altrimenti, resetta
-          this.selected[property] = null;
-          r = data;
-        }
-      }
-
-    } else {
-      //Se non sono stati applicati filtri
+    if(!property || !value || this.selected[property] === value){
+      //Se non ci proprietà o valori per cui filtrare, o se il filtro è già applicato 
       this.selected[property] = null;
       r = data;
+    } else {
+      //Restituisci i risultati per quel valore in quella proprietà (where property = value)
+      this.selected[property] = value;
+      r = data.filter(stamp => stamp[property].indexOf(value)>=0);
     }
+
     return r;
   }
 
