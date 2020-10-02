@@ -3,14 +3,14 @@
 <!-- ToDo: aggiungere classe selected -->
 
     <h4>Categories</h4>
-    <span (click)="filterMatrix('category')">ALL</span>
-    <span *ngFor="let category of datasources.category" (click)="filterMatrix('category', category)">
+    <span (click)="onFilter('category')">ALL</span>
+    <span *ngFor="let category of datasources.category" (click)="onFilter('category', category)">
         {{category}}&nbsp;
     </span>
 
     <h4>Countries</h4>
-    <span (click)="filterMatrix('country')">ALL</span>
-    <span *ngFor="let country of datasources.country" (click)="filterMatrix('country', country)">
+    <span (click)="onFilter('country')">ALL</span>
+    <span *ngFor="let country of datasources.country" (click)="onFilter('country', country)">
         {{country}}&nbsp;
     </span>
 

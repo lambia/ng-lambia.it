@@ -14,7 +14,7 @@ export class MatrixComponent implements OnInit {
   // matrix: StampMatrix = [{ id: 1, title: 'uno', visible: true }]; //M1
   // matrix: Stamp[] = [{ id: 1, title: 'uno', visible: true }]; //M2
   stamps = STAMPS; //M3
-  filteredStamps = STAMPS; //M3
+  filteredStamps = null; //M3
 
   selected = {};
   //ToDo: cambiare nome
@@ -25,36 +25,50 @@ export class MatrixComponent implements OnInit {
   //ToDo: refactoring
   //ToDo: filtri multipli
   //ToDo: selected deve essere un oggetto con tutti i possibili valori, da settare true o false
-  filterMatrix(property: string, value?: string): void {
+  filterData(data: object[], property?: string, value?: string): {} {
     console.log(`Selected ${property}: ${value}`);
+    let r = {};
     
-    if(this.selected[property] === value) {
-      //Se il valore è già selezionato, resetta
-      this.selected[property] = null;
-      this.filteredStamps = this.stamps;
-    } else {
-      //Altrimenti
-      if(value) {
-        //Se c'è un filtro, restituisci il risultato
-        this.selected[property] = value;
-        this.filteredStamps = this.stamps.filter(stamp => {
-          if(stamp[property]) {
-            return stamp[property].indexOf(value)>=0;
-          } else {
-            return [];
-          }
-        });
-      } else {
-        //Altrimenti, resetta
-        this.selected[property] = null;
-        this.filteredStamps = this.stamps;
-      }
-    }
+    if(property) {
+      //Se è stata passata una proprietà per cui filtrare
 
+      if(this.selected[property] === value) {
+        //Se il valore è già selezionato, resetta
+        this.selected[property] = null;
+        r = data;
+      } else {
+        //Altrimenti
+        if(value) {
+          //Se c'è un filtro, restituisci il risultato
+          this.selected[property] = value;
+          r = data.filter(stamp => {
+            if(stamp[property]) {
+              return stamp[property].indexOf(value)>=0;
+            } else {
+              return [];
+            }
+          });
+        } else {
+          //Altrimenti, resetta
+          this.selected[property] = null;
+          r = data;
+        }
+      }
+
+    } else {
+      //Se non sono stati applicati filtri
+      this.selected[property] = null;
+      r = data;
+    }
+    return r;
   }
 
-  //ToDo: refactoring
-  distinctFromObjectsArray(array: object[], properties: string[]) {
+  onFilter(property: string, value?: string): void {
+    this.filteredStamps = this.filterData(this.stamps, property, value);
+  }
+
+  //ToDo: naming
+  distinctFromObjectsArray(array: object[], properties: string[]): object {
     let tmp = { };
 
     for (let i = 0; i < properties.length; i++) {
@@ -70,11 +84,7 @@ export class MatrixComponent implements OnInit {
         
         //Per ogni valore della proprietà dell'oggetto dell'array, pusha
         stamp[property].map(p => {
-          // Con questo ternario si può eliminare il for precedente, ma è meno efficiente
-          // tmp[property] ? tmp[property].push(p) : tmp[property] = [p];
           tmp[property].push(p);
-          // Con questo ternario si può eliminare il for successivo, ma è meno efficiente
-          // tmp[property] = [...new Set(tmp[property])];
         });
       }
     });
@@ -88,6 +98,7 @@ export class MatrixComponent implements OnInit {
   }
 
   //ToDo: fare
+  //ToDo: naming
   booleansObjectFromArray(obj: object) {
     return {};
   }
@@ -97,6 +108,7 @@ export class MatrixComponent implements OnInit {
   ngOnInit(): void {
     this.datasources = this.distinctFromObjectsArray(this.stamps, ["country","category"]);
     // this.filters = this.booleansObjectFromArray(this.datasources);
+    this.filteredStamps = this.filterData(this.stamps);
   }
 
 }
