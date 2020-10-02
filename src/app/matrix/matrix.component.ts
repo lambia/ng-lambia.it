@@ -16,7 +16,7 @@ export class MatrixComponent implements OnInit {
   stamps = STAMPS; //M3
   filteredStamps = null; //M3
 
-  storeIndex = ["colors", "things", "categories"];
+  storeGroups = ["colors", "things", "categories"];
   store = {
     colors: [
       { id: 1, name: "Red", links: { things: [1,2,3], categories: [1,2,3] } },
@@ -38,39 +38,47 @@ export class MatrixComponent implements OnInit {
       { id: 3, name: "Physics", links: { colors: [1,2], things: [1,4,5] } },
     ]
   };
+  selected = { group: null, value: null };
   
   initData() {
-    this.storeIndex.map(group => {
+    this.storeGroups.map(group => {
       this.store[group].map(item=>{
         item.selected = false;
       });
     });
   }
 
+  //ToDo: naming dello store
+  //ToDo: typing e model
+  //ToDo: includere l'init con params?=null ??
   //prendi this.store[property] con id = value
-  onNewFilter(property?: string, value?: string): void {
-    //ToDo: aggiungere la deselezione e naming
-    let selected = this.store[property].filter(r=>r.id==value);
-    if(selected[0] && selected[0].selected) {
-      //Se il valore era già selezionato, deseleziona
-      this.initData();
-    } else {
-      //Se il valore non era selezionato, per ogni gruppo esistente
-      this.storeIndex.map(group=>{
-        this.store[group].map(item=>{
+  groupFiltering(data: object, groups: string[], group: string, value: string): void {
+      //per ogni gruppo esistente
+      groups.map(storeGroup=>{
+        data[storeGroup].map(storeItem=>{
           //Se si tratta del gruppo del filtro
-          if(group==property) {
+          if(storeGroup==group) {
             //Evidenzia solo il selezionato (un filtro per gruppo)
-            item.selected = (item.id==value);
+            storeItem.selected = (storeItem.id==value);
           } else {
             //Altrimenti, evidenzia quelle che corrispondono al filtro
-            item.selected = item.links[property].indexOf(value)>=0;
+            storeItem.selected = storeItem.links[group].indexOf(value)>=0;
           }
         });
       });
+
+  }
+
+  onFilter(group: string, value: string): void {
+    if(this.selected.group==group && this.selected.value == value) {
+      //Se il valore era già selezionato, deseleziona
+      this.selected = { group: null, value: null };
+      this.initData();
+    } else {
+      //Se il valore non era selezionato, filtra
+      this.selected = { group: group, value: value };
+      this.groupFiltering(this.store, this.storeGroups, group, value);
     }
-
-
   }
 
   constructor() { }
