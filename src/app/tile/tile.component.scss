@@ -1,0 +1,13 @@
+.tile {
+    background-color: lightseagreen;
+    color:white;
+    padding: 12px 12px;
+    margin: 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.tile:hover {
+    background-color: sandybrown;
+    cursor: pointer;
+}
