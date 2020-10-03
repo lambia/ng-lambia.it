@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { colors, things, categories } from './items.mock';
+import { colors, things, categories } from '../interfaces/items.mock';
 
 @Component({
   selector: 'app-matrix',
